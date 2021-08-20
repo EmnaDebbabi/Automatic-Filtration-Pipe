@@ -375,7 +375,7 @@ NER example:
 
 </ul>
 
-##### Data Formatting
+#### Data Formatting
 
 Formating and transforming the enriched data to the desired output. Each document is formated
 into jsonl file. Output format:
@@ -385,7 +385,7 @@ into jsonl file. Output format:
 <li> context: Context description of the entity  </li>
 </ul>
 
-##### NLP pipeline
+#### NLP pipeline
 
 Finally the feature set is formatted under these techniques and ready to launch the query of the pipeline on which ML algorithms are applied to classify sentiment under any one of the
 categories which are; Positive, Negative and Neutral. The sentiment is computed on all documents
@@ -394,7 +394,7 @@ more accurate because it is related to the targeted entity. This gives a sentime
 level. The daily sentiment score aggregates the sentence level sentiment scores from the same day
 related to the targeted entity.
 
-##### Job scheduling
+#### Job scheduling
 
 Since each instant social media and web data are increasing, we need to schedule daily routine tasks
 in order to take a new daily backup of companies data and that by scheduling tasks that can be
@@ -402,7 +402,7 @@ run at a given time or repeatedly, and they typically use the cron command, whic
 language popular on Unix systems. These are time-based event triggers that let programs plan tasks
 to be carried out on specific dates or at specific times based on cron expressions.
 
-##### Results
+#### Results
 
 Let’s take an example for one company ’Tesla’; the pipeline will complete its description:’Tesla Inc.,
 called Tesla Motors until 2017, is an automobile manufacturer of electric cars.’:
@@ -438,7 +438,7 @@ The stock of Tesla (TSLA) has been on a tear over recent weeks and months; Tesla
 net margin of 0.55% and a negative return on equity of 1.86%. And the US looks into over 100
 complaints of Tesla cars suddenly accelerating and crashing.
 
-##### Concluding remarks and future scope
+#### Concluding remarks and future scope
 
 As we saw by visual inspection the cosine similarity gives a good indication of the similarity between
 the two companies descriptions. The biggest advantage however, is the speed. By utilizing a dis-
