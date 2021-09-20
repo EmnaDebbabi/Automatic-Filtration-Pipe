@@ -1,0 +1,14 @@
+{
+  "preprod": {
+    "_audience": "https://preprod-trial/",
+    "_client_id": "client_id_here",
+    "_token_url": "https://pre-prod.eu.auth0.com/oauth/token",
+    "host": "https://api-preprod.textreveal.com"
+  },
+  "prod": {
+    "_audience": "https://trial.textreveal.com/",
+    "_client_id": "client_id_here",
+    "_token_url": "https://prod.eu.auth0.com/oauth/token",
+    "host": "https://api.textreveal.com"
+  }
+}
