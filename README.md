@@ -29,7 +29,7 @@ storing this data.
 The NLP pipeline that we used to extract insightful NLP indicators is based on an NLP engine that helps capture relevant, non-trivial information from text.
 Develop and gain access to unique analytics and build custom indicators, such as sentiment, emo-
 tions, or ESG scores on financial assets, public private companies, brands, products, executives,
-commodities, currencies, crypto-assets, economic concepts and more. TextReveal analyses millions
+commodities, currencies, crypto-assets, economic concepts and more. The NLP pipe analyses millions
 of sources to extract sentiments. This feed aggregates messages daily and computes several aggre-
 gated indicators suitable for signal construction. To do so, we extract NLP indicators for each asset.
 The overall pipeline can be split into five main steps. Data is queried and analysed following the below
@@ -53,7 +53,7 @@ We will be interested in the first and second steps in the following part.
 
 ## Indicators
 
-TextReveal pipeline outputs 9 raw indicators that describe :
+The NLP pipeline outputs 9 raw indicators that describe :
 <ul>
 <li> Volume </li>
 <li> Sentiment (positive, negative) </li>
