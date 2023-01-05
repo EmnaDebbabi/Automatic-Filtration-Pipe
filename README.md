@@ -146,6 +146,39 @@ in the input file.
 
 ### Data engineering and preparation
 
+In this part we will proceed with deeper digging into data engineering and preparation process
+by presenting the proposed framework solution and its process with details and with mention of our
+dataset, the resources to work with and the inputs and outputs of our solution.
+
+### Proposed framework
+Data feed from the companies list file provided by the client are used as input. To ensure a good
+quality of results a whole phase of data collection and preparation must be done. Firstly data
+collection is done by scraping. Secondly these file data pre-processing is done where removal of
+punctuation and stopwords is done also tokenization and lemmatization is done. Henceforth, pre-processed data is used either in the first method that uses KG or in the second method without using
+KG. After Candidates generation step of the NLP pipeline, filtering is done on which four NLP
+techniques namely; TF-IDF, N-grams, Cosine similarity and NER are applied. Finally the feature
+set is formatted under these techniques and ready to launch the query of the NLP pipeline on
+which ML algorithms are applied to classify sentiment under any one of the categories which are;
+Positive, Negative and Neutral. The flow chart of the proposed framework of sentiment analysis and
+prediction is depicted in Figure as below
+
+Proposed framework of automatic NLP indicators extracting:
+
+![image](https://user-images.githubusercontent.com/47029962/210672356-4cc3939d-8e2d-492a-a648-035161adbe80.png)
 
 
+Each step from the above proposed solution will be explained in the following paragraphs:
+
+#### Data requirements
+
+Companies list file is an external file that contains 100k companies listed or not in the stock market
+to search via csv for example. Required parameters for the file are the following:
+<ul>  
+<li> id : Any unique identifier </li>
+<li> name: The name of the company </li>
+<li> description : A short description of your entity </li>
+<li> website: The website of the company </li>
+<li> crunchbase_id: The crunchbase identifier </li>
+</ul>
+We will start with a sample of 500 companies.
 
