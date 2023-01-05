@@ -379,10 +379,9 @@ into jsonl file. Output format:
 <li> context: Context description of the entity  </li>
 </ul>
 
-##### TR pipeline
+##### NLP pipeline
 
-Finally the feature set is formatted under these techniques and ready to launch the query of Tex-
-treveal pipeline on which ML algorithms are applied to classify sentiment under any one of the
+Finally the feature set is formatted under these techniques and ready to launch the query of the pipeline on which ML algorithms are applied to classify sentiment under any one of the
 categories which are; Positive, Negative and Neutral. The sentiment is computed on all documents
 and sentences that were selected after the disambiguation pipeline. This makes the sentiment score
 more accurate because it is related to the targeted entity. This gives a sentiment score at the sentence
