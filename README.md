@@ -194,7 +194,7 @@ text that present the company’s description. The used tools:
 <li> nltk-wordnet: An english dictionary which is part of the Natural Language Tool Kit (NLTK)
 in Python. </li>
 </ul>
-#####Data preparation
+##### Data preparation
 In order to ensure and enhance performance, data pre-processing is done to the name, website and
 description fields threw:
 <ul>
