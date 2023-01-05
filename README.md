@@ -182,3 +182,263 @@ to search via csv for example. Required parameters for the file are the followin
 </ul>
 We will start with a sample of 500 companies.
 
+#### Data collection
+Data collection is done threw scraping which is an automatic process of gathering information from
+the Internet. The informations to complete here are empty descriptions of the companies list file
+since it contains 40% of null descriptions. The process will search the corresponding company by its
+name on different websites and will find the company’s name accompanied by a pattern to extract
+text that present the company’s description. The used tools:
+<ul>
+<li> googlesearch-python: A Google search engine scraping package for Python.</li>
+<li> BeautifulSoup: a Python library for extracting data from XML and HTML documents. </li>
+<li> nltk-wordnet: An english dictionary which is part of the Natural Language Tool Kit (NLTK)
+in Python. </li>
+</ul>
+#####Data preparation
+In order to ensure and enhance performance, data pre-processing is done to the name, website and
+description fields threw:
+<ul>
+<li> Remove punctuation: Remove certain characters from strings. </li>
+<li> Remove stopwords: Set the search engine to ignore words that are often used but that can
+still be safely discarded without changing the meaning of the sentence. </li>
+<li> Tokenization: Splitting the body of the text where strings are converted to streams of token
+objects. </li>
+<li> Lemmatization: An algorithmic process of finding the lemma of a word depending on its
+meaning and context which is the base or the dictionary form of a word without inflectional
+endings. </li>
+<li> Noun phrase extraction: To expand the keywords list -since the larger the keywords list
+is, the more precise the results are- we extract all significant nouns from the given companies
+descriptions using the python library Textblob because it has the best time and quality per-
+formance; it is fast and it allows to detect compound nouns based on the experience done on
+a company’s description sample data as it is shown in the table below. 
+
+Degrees of libraries efficiency:
+
+![image](https://user-images.githubusercontent.com/47029962/210737771-33299a04-74a1-4e89-bdd7-19f35c8a6aa4.png)
+
+
+</li>
+
+</ul>
+
+
+#### Using Knowledge graph method
+The first method is to request as many relevant documents as possible related to the targeted company
+using the Knowledge Graph. The KG includes open, custom, and private structured knowledge
+bases :
+<ul>
+<li> Wikidata (+70M entities) </li>
+<li> Crunchbase ( 800k entities ) </li>
+</ul>
+Objective : Expand the documents requested to the data lake. The KG allows to link an entity to
+several of its properties, making the search request more complete and relevant.
+
+KG properties:
+
+![image](https://user-images.githubusercontent.com/47029962/210738228-ab83b887-62ed-43f9-8b51-2e067857ef31.png)
+
+As shown in Figure below we can leverage the Knowledge Graph to gather relevant information about
+a company by using the properties that are linked to it. Most commonly used properties are CEO,Subsidiary and Products.
+
+For example :
+
+KG properties example:
+
+![image](https://user-images.githubusercontent.com/47029962/210738432-586dedf8-56cf-407d-a75c-d1b25e95c736.png)
+
+#### Using your own entities method
+This method makes it possible to build you request automatically with external information via csv
+for example. Required parameters for each entity are the following
+Input parameters:
+<ul>
+<li> filePath: An external file that contains the companies list to search via csv for example.
+Required parameters for the file are the following
+<li>  id : Any unique identifier </li>
+<li>  name: The name of the company </li>
+<li>  description : A short description of your entity </li>
+<li>  website: The website of the company </li>
+<li>  crunchbase_id: The crunchbase identifier </li>
+</ul>
+
+#### Candidates generation
+When choosing the first method that uses KG, this route makes it possible to return a list of
+candidates following a search based on a fuzzy key. An example of payload and response is the
+following figure:
+
+Example of candidates generation response:
+
+![image](https://user-images.githubusercontent.com/47029962/210739321-d14f596e-973c-452d-9b5d-cc1a5de49e8c.png)
+
+#### Filtering
+
+After Candidates generation step, Filtering is done on which four NLP techniques namely; TF-IDF,
+N-grams, Cosine similarity and NER are applied. And in order to disambiguate the companies threw
+applying filtering out among all the requested documents the ones that do not actually mention the
+targeted company. This is done using the description matching and the Named Entity Recognition
+(NER).
+
+##### Description matching
+Description matching is done to determine if the sentence in which the detected entity is mentioned
+is actually referring to the target entity we are interested in. Its value ranges between 0 and 1, the
+higher the value the closer the matching is. This score is used to filter out non relevant documents.
+For the human reader it is obvious that both:
+
+"Apple is a multinational corporation that designs, manufactures, and markets consumer electronics,
+personal computers, and software."
+and
+"Apple Inc. designs, manufactures and markets smartphones, personal computers, tablets, wearables
+and accessories, and sells a variety of related services."
+are the descriptions of the same company. It is challenging to identify these nearly identical sequences
+since for a computer, these are fundamentally distinct. Program Using TF-IDF with N-Grams as
+terms to locate related strings is one approach to solving this issue. This turns the issue into a
+matrix multiplication problem., which is computationally much cheaper than applying the traditional
+approaches to string matching such as the [Winkler and Jaro, 1989] or [Levenshtein, 1965] distance
+measure. Using this approach made it possible to search for near duplicates in a set of 663,000
+company descriptions in 42 minutes using only a dual-core laptop.
+Even if NER has a very high precision, the description matching is a very relevant second filtering
+layer. In the example below, figure1.6 the word ’apple’ in the document has already been detected
+by the NER as a "COMPANY" type entity. We need to ensure that this entity refers to Apple the
+company and not the fruit. To do so, we compute the cosine distance between the embedding vector
+of the sentence and the embedding of Apple’s description.
+
+Example of description matching process:
+
+![image](https://user-images.githubusercontent.com/47029962/210739620-6987c7f6-e0c6-4acd-8d32-28fc6671d910.png)
+
+<ul>
+<li> TF-IDF:
+
+A method for extracting features from text that involves multiplying a term’s frequency in a
+document (the Term Frequency, or TF) by its importance over the entire corpus (the Inverse
+Document Frequency, or IDF). This last term gives words that are less important (such the,
+it, and etc.) a lower weight and terms that are less common a higher weight. IDF is calculated
+as:
+
+IDF(t) = log_e(Total number of documents / Number of documents with term t in it).
+
+An example:
+
+Consider a document containing 100 words in which the word "Apple" appears 3 times. The
+term frequency (i.e., tf) for "Apple" is then (3 / 100) = 0.03. Now, assume we have 10 million
+documents and the word "Apple" appears in one thousand of these. Then, the inverse document
+frequency (i.e., idf) is calculated as log(10,000,000 / 1,000) = 4. Thus, the Tf-idf weight is the
+product of these quantities: 0.03 * 4 = 0.12.
+
+In text categorization and text clustering, TF-IDF is highly helpful. It is used to convert
+written information into comparably simple numerical vectors.
+</li>
+<li> N-Grams
+Although words are typically used as the terms in TF-IDF, this is not required. Since most
+company names only contain one or two words, employing words as keywords wouldn’t be
+very helpful in our situation. For this reason, we will use n-grams, which are collections of N
+connected objects—in this case, characters.
+
+N-grams in "Apple":
+
+![image](https://user-images.githubusercontent.com/47029962/210740128-54cf5a00-fabe-42be-9177-ce3d0e20456d.png)
+
+</li>
+<li>
+Cosine similarity
+
+Cosine similarity is a metric used to determine how similar the descriptions are irrespective of
+their size. Mathematically, it measures the cosine of the angle between two vectors of TF-IDF
+values projected in a multi-dimensional space. It turns out, the closer the descriptions are by
+angle, the higher is the Cosine Similarity (Cos theta). As it is shown in the following figure1.8.
+Empirically, we notice that there is a threshold at which we can be sure of the relevance of a
+text, this threshold can vary significantly depending on the source type.
+
+Cosine similarity formula:
+
+![image](https://user-images.githubusercontent.com/47029962/210743107-4ada339f-f33b-490e-b8c4-f45d9b34433e.png)
+
+</li>
+</ul>
+##### Named Entity Recognition (NER)
+NER allows to identify proper mentions in a text and classify them into a set of predefined categories
+of interest. By using Spacy library which has the ’ner’ pipeline component that identifies token
+spans that match a specified collection of named entities.
+<ul>
+<li> Non-comprehensive list of categories: Organizations, Persons, Concepts </li>
+<li> Variation of Named Entities: Emmanuel Macron / Macron </li>
+<li> Ambiguity of Named Entities: May (Person vs date vs verb) </li>
+
+NER example:
+
+![image](https://user-images.githubusercontent.com/47029962/210744265-34b00a22-0fb7-4e5e-87d5-fe4e6087cdc0.png)
+
+
+</ul>
+
+##### Data Formatting
+Formating and transforming the enriched data to the desired output. Each document is formated
+into jsonl file. Output format:
+<ul>
+<li> entity_of_interest: Unique id for the entity of interest </li>
+<li> keywords: List of keywords to search  </li>
+<li> context: Context description of the entity  </li>
+</ul>
+
+##### TR pipeline
+
+Finally the feature set is formatted under these techniques and ready to launch the query of Tex-
+treveal pipeline on which ML algorithms are applied to classify sentiment under any one of the
+categories which are; Positive, Negative and Neutral. The sentiment is computed on all documents
+and sentences that were selected after the disambiguation pipeline. This makes the sentiment score
+more accurate because it is related to the targeted entity. This gives a sentiment score at the sentence
+level. The daily sentiment score aggregates the sentence level sentiment scores from the same day
+related to the targeted entity.
+
+##### Job scheduling
+Since each instant social media and web data are increasing, we need to schedule daily routine tasks
+in order to take a new daily backup of companies data and that by scheduling tasks that can be
+run at a given time or repeatedly, and they typically use the cron command, which is an expression
+language popular on Unix systems. These are time-based event triggers that let programs plan tasks
+to be carried out on specific dates or at specific times based on cron expressions.
+##### Results
+Let’s take an example for one company ’Tesla’; the pipeline will complete its description:’Tesla Inc.,
+called Tesla Motors until 2017, is an automobile manufacturer of electric cars.’:
+
+Candidates generation for Tesla example:
+
+![image](https://user-images.githubusercontent.com/47029962/210750106-1f6821ad-27dd-4d1a-a2a0-1537278699e6.png)
+
+The pipeline will filter and keep only the first item with item_id="Q478214" from the list of the
+proposed items as it is shown in the Figure above. And after request creation and getting the
+correspondent data from elasticsearch datalake, timeseries aggregation are generated for the given
+instance. Also plotting signal using moving average for a given entity can be done as it is shown in
+Figure below:
+
+Display max anger signal for the entity Tesla:
+
+![image](https://user-images.githubusercontent.com/47029962/210750267-b000162a-dd65-4f92-907a-e694bd10a875.png)
+
+
+We notice from the previous graph that for the entity with the item_id: ’Q478214’ : The "max_anger"
+reached a noticeable steady peak on 19 May 2020 before falling a little to reach another second peak
+on 19 July 2020, the value of "max_anger" is increasing little by little throw months.
+To understand the reason of the "max_anger" fluctuations, we have to extract the informations from
+"text" that matches the correspondent dates.
+From reading the texts that matches the first peak of 19 May 2020, we can understand that:
+The biggest change at Tesla is that the Fremont, California, factory was forced to shut down on
+March 23, and the Gigafactory in Nevada is cutting about three-quarters of its workforce. Without
+vehicles coming off production lines, Tesla doesn’t have any revenue or margin, meaning cash burn
+will likely be high in mid-2020. Moreover Elon Musk reveals Tesla’s electric Cybertruck and smashes
+its windows.
+From reading the texts that matches the second peak on 19 July 2020, we can understand that:
+The stock of Tesla (TSLA) has been on a tear over recent weeks and months; Tesla had a negative
+net margin of 0.55% and a negative return on equity of 1.86%. And the US looks into over 100
+complaints of Tesla cars suddenly accelerating and crashing.
+
+##### Concluding remarks and future scope
+As we saw by visual inspection the cosine similarity gives a good indication of the similarity between
+the two companies descriptions. The biggest advantage however, is the speed. By utilizing a dis-
+tributed computing environment like Apache Spark, the method previously outlined can be scaled to
+considerably bigger datasets. This might be accomplished by sending one of the TF-IDF matrices to
+all employees, and parallelizing the second (in our case a copy of the TF-IDF matrix) into multiple
+sub-matrices. Each worker on the system can then perform multiplication (using Numpy or the
+sparse dot topn library) on the entire first matrix and on a part of the second matrix.
+
+
+
+
