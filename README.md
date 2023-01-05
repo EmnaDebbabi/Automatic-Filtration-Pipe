@@ -194,6 +194,7 @@ text that present the company’s description. The used tools:
 <li> nltk-wordnet: An english dictionary which is part of the Natural Language Tool Kit (NLTK)
 in Python. </li>
 </ul>
+
 ##### Data preparation
 
 In order to ensure and enhance performance, data pre-processing is done to the name, website and
@@ -356,6 +357,7 @@ Cosine similarity formula:
 
 </li>
 </ul>
+
 ##### Named Entity Recognition (NER)
 
 NER allows to identify proper mentions in a text and classify them into a set of predefined categories
