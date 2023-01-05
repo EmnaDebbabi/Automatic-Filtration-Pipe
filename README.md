@@ -195,6 +195,7 @@ text that present the company’s description. The used tools:
 in Python. </li>
 </ul>
 ##### Data preparation
+
 In order to ensure and enhance performance, data pre-processing is done to the name, website and
 description fields threw:
 <ul>
@@ -278,6 +279,7 @@ targeted company. This is done using the description matching and the Named Enti
 (NER).
 
 ##### Description matching
+
 Description matching is done to determine if the sentence in which the detected entity is mentioned
 is actually referring to the target entity we are interested in. Its value ranges between 0 and 1, the
 higher the value the closer the matching is. This score is used to filter out non relevant documents.
@@ -355,6 +357,7 @@ Cosine similarity formula:
 </li>
 </ul>
 ##### Named Entity Recognition (NER)
+
 NER allows to identify proper mentions in a text and classify them into a set of predefined categories
 of interest. By using Spacy library which has the ’ner’ pipeline component that identifies token
 spans that match a specified collection of named entities.
@@ -371,6 +374,7 @@ NER example:
 </ul>
 
 ##### Data Formatting
+
 Formating and transforming the enriched data to the desired output. Each document is formated
 into jsonl file. Output format:
 <ul>
@@ -389,12 +393,15 @@ level. The daily sentiment score aggregates the sentence level sentiment scores 
 related to the targeted entity.
 
 ##### Job scheduling
+
 Since each instant social media and web data are increasing, we need to schedule daily routine tasks
 in order to take a new daily backup of companies data and that by scheduling tasks that can be
 run at a given time or repeatedly, and they typically use the cron command, which is an expression
 language popular on Unix systems. These are time-based event triggers that let programs plan tasks
 to be carried out on specific dates or at specific times based on cron expressions.
+
 ##### Results
+
 Let’s take an example for one company ’Tesla’; the pipeline will complete its description:’Tesla Inc.,
 called Tesla Motors until 2017, is an automobile manufacturer of electric cars.’:
 
@@ -430,6 +437,7 @@ net margin of 0.55% and a negative return on equity of 1.86%. And the US looks i
 complaints of Tesla cars suddenly accelerating and crashing.
 
 ##### Concluding remarks and future scope
+
 As we saw by visual inspection the cosine similarity gives a good indication of the similarity between
 the two companies descriptions. The biggest advantage however, is the speed. By utilizing a dis-
 tributed computing environment like Apache Spark, the method previously outlined can be scaled to
